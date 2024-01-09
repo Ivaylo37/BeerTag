@@ -11,6 +11,7 @@ public class Beer {
     private double abv;
 
     private Style style;
+    private User createdBy;
 
     public Beer() {
     }
@@ -51,6 +52,14 @@ public class Beer {
 
     public void setStyle(Style style) {
         this.style = style;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override

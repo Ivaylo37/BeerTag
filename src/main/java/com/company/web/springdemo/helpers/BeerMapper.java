@@ -2,6 +2,7 @@ package com.company.web.springdemo.helpers;
 
 import com.company.web.springdemo.models.Beer;
 import com.company.web.springdemo.models.BeerDto;
+import com.company.web.springdemo.models.User;
 import com.company.web.springdemo.services.StyleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,17 +17,18 @@ public class BeerMapper {
         this.styleService = styleService;
     }
 
-    public Beer fromDto(int id, BeerDto dto) {
-        Beer beer = fromDto(dto);
+    public Beer fromDto(int id, BeerDto dto, User user) {
+        Beer beer = fromDto(dto, user);
         beer.setId(id);
         return beer;
     }
 
-    public Beer fromDto(BeerDto dto) {
+    public Beer fromDto(BeerDto dto, User user) {
         Beer beer = new Beer();
         beer.setName(dto.getName());
         beer.setAbv(dto.getAbv());
         beer.setStyle(styleService.get(dto.getStyleId()));
+        beer.setCreatedBy(user);
         return beer;
     }
 

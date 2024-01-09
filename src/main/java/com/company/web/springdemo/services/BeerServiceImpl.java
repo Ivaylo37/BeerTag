@@ -49,7 +49,7 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void update(Beer beer, User user) {
-        if (!user.isAdmin()) {
+        if (!user.isAdmin() && !beer.getCreatedBy().equals(user)) {
             throw new UnauthorizedOperationException("Only admins or owners can modify the beer.");
         }
         boolean duplicateExists = true;
@@ -71,7 +71,7 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void delete(int id, User user) {
-        if (!user.isAdmin()) {
+        if (!user.isAdmin() && !user.equals(get(id).getCreatedBy())) {
             throw new UnauthorizedOperationException("Only admins or owners can delete the beer.");
         }
         repository.delete(id);
