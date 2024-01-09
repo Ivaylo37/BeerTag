@@ -35,15 +35,22 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createUser(User user) {
-        boolean duplicateExists = true;
+        boolean duplicateUserNameExists = true;
+        boolean duplicatePasswordExists = false;
         try {
             repository.getByUsername(user.getUserName());
         } catch (EntityNotFoundException e) {
-            duplicateExists = false;
+            duplicateUserNameExists = false;
+            if (getAll().stream().anyMatch(user1 -> user1.getPassword().equals(user.getPassword()))) {
+                duplicatePasswordExists = true;
+            }
         }
 
-        if (duplicateExists) {
+        if (duplicateUserNameExists) {
             throw new EntityDuplicateException("User", "username", user.getUserName());
+        }
+        if (duplicatePasswordExists) {
+            throw new EntityDuplicateException("User", "password", user.getPassword());
         }
 
         repository.create(user);

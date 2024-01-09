@@ -13,9 +13,11 @@ public class UserRepositoryImpl implements UserRepository{
 
     public UserRepositoryImpl() {
         users = new ArrayList<>();
-        users.add(new User(1, "spas", true));
-        users.add(new User(2, "gosho", false));
-        users.add(new User(3, "pesho", false));
+        User admin = new User("spas", "asafsdafds", "spas", "spasov", "test");
+        admin.setAdmin(true);
+        users.add(admin);
+        users.add(new User("pesho", "asafsdafds", "spas", "spasov", "test"));
+        users.add(new User("gosho", "asafsdafds", "spas", "spasov", "test"));
     }
 
     @Override

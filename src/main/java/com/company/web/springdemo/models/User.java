@@ -15,10 +15,12 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, boolean isAdmin) {
-        this.id = id;
-        this.userName = username;
-        this.isAdmin = isAdmin;
+    public User(String userName, String password, String firstName, String lastName, String email) {
+        this.userName = userName;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
     public int getId() {
