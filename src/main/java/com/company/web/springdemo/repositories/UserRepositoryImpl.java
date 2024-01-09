@@ -38,4 +38,20 @@ public class UserRepositoryImpl implements UserRepository{
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("User", "username", username));
     }
+
+    @Override
+    public void create(User user) {
+        int nextId = users.size() + 1;
+        user.setId(nextId);
+        user.setAdmin(false);
+        users.add(user);
+    }
+
+    @Override
+    public void delete(int id) {
+        User userToDelete = getById(id);
+        users.remove(userToDelete);
+    }
+
+
 }

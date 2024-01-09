@@ -9,4 +9,6 @@ public interface UserService {
     List<User> getAll();
     User getById(int id);
     User getByUsername(String username);
+    void createUser(User user);
+    void deleteUser(int id, User user);
 }
