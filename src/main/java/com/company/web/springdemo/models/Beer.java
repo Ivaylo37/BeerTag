@@ -5,21 +5,27 @@ import java.util.Objects;
 public class Beer {
 
     private int id;
-
     private String name;
-
     private double abv;
-
     private Style style;
     private User createdBy;
 
     public Beer() {
     }
 
-    public Beer(int id, String name, double abv) {
+    public Beer(int id, String name, double abv, Style style, User user) {
         this.id = id;
         this.name = name;
         this.abv = abv;
+        this.style = style;
+        this.createdBy = user;
+    }
+
+    public Beer(String name, double abv, Style style, User user) {
+        this.name = name;
+        this.abv = abv;
+        this.style = style;
+        this.createdBy = user;
     }
 
     public int getId() {

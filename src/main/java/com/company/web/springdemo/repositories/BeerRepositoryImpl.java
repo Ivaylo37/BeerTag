@@ -11,28 +11,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
-public class BeerRepositoryImpl implements BeerRepository {
+//@Repository
+public class BeerRepositoryImpl{
 
-    private final List<Beer> beers;
+    private final List<Beer> beers = new ArrayList<>();
 
-    @Autowired
     public BeerRepositoryImpl(StyleRepository styleRepository) {
-        beers = new ArrayList<>();
-        Beer beer = new Beer(1, "Glarus English Ale", 4.6);
-        beer.setStyle(styleRepository.get(1));
-        beers.add(beer);
 
-        beer = new Beer(2, "Rhombus Porter", 5.0);
-        beer.setStyle(styleRepository.get(2));
-        beers.add(beer);
-
-        beer = new Beer(3, "Opasen Char", 6.6);
-        beer.setStyle(styleRepository.get(3));
-        beers.add(beer);
     }
 
-    @Override
+
     public List<Beer> get(String name, Double minAbv, Double maxAbv, Integer styleId, String sortBy, String sortOrder) {
         List<Beer> result = beers;
         result = filterByName(result, name);
@@ -43,7 +31,7 @@ public class BeerRepositoryImpl implements BeerRepository {
         return result;
     }
 
-    @Override
+
     public Beer get(int id) {
         return beers.stream()
                 .filter(beer -> beer.getId() == id)
@@ -51,7 +39,6 @@ public class BeerRepositoryImpl implements BeerRepository {
                 .orElseThrow(() -> new EntityNotFoundException("Beer", id));
     }
 
-    @Override
     public Beer get(String name) {
         return beers.stream()
                 .filter(beer -> beer.getName().equals(name))
@@ -59,14 +46,14 @@ public class BeerRepositoryImpl implements BeerRepository {
                 .orElseThrow(() -> new EntityNotFoundException("Beer", "name", name));
     }
 
-    @Override
+
     public void create(Beer beer) {
         int nextId = beers.size() + 1;
         beer.setId(nextId);
         beers.add(beer);
     }
 
-    @Override
+
     public void update(Beer beer) {
         Beer beerToUpdate = get(beer.getId());
         beerToUpdate.setName(beer.getName());
@@ -74,7 +61,7 @@ public class BeerRepositoryImpl implements BeerRepository {
         beerToUpdate.setStyle(beer.getStyle());
     }
 
-    @Override
+
     public void delete(int id) {
         Beer beerToDelete = get(id);
         beers.remove(beerToDelete);
