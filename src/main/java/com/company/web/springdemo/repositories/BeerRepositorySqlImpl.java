@@ -78,7 +78,10 @@ public class BeerRepositorySqlImpl implements BeerRepository{
 
     @Override
     public Beer get(int id) {
-        String query = "select id, beer_name, beer_abv from beers where id = ?";
+        String query = "select id, beer_name, beer_abv from beers " +
+                "join styles on styles.id = beers.beer_style " +
+                "join users on beers.beer_creator = users.id " +
+                "where id = ?";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -100,7 +103,10 @@ public class BeerRepositorySqlImpl implements BeerRepository{
     }
 
     public Beer get(String name) {
-        String query = "select id, beer_name, beer_abv from beers where beer_name = ?";
+        String query = "select * from beers " +
+                "join styles on styles.id = beers.beer_style " +
+                "join users on beers.beer_creator = users.id " +
+                " where beer_name = ?";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -167,7 +173,7 @@ public class BeerRepositorySqlImpl implements BeerRepository{
                 PreparedStatement statement = connection.prepareStatement(query);
         ) {
             statement.setInt(1, id);
-
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -178,9 +184,9 @@ public class BeerRepositorySqlImpl implements BeerRepository{
         try {
             while (resultSet.next()) {
                 int beerId = resultSet.getInt("id");
-                String beerName = resultSet.getString("name");
-                double beerAbv = resultSet.getDouble("abv");
-                int styleId1 = resultSet.getInt("style_id");
+                String beerName = resultSet.getString("beer_name");
+                double beerAbv = resultSet.getDouble("beer_abv");
+                int styleId1 = resultSet.getInt("beer_style");
                 int user_id = resultSet.getInt("beer_creator");
                 String style_name = resultSet.getString("style_name");
                 String username = resultSet.getString("username");
