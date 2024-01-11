@@ -1,13 +1,30 @@
 package com.company.web.springdemo.models;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "beers")
 public class Beer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "beer_name")
     private String name;
+    @Column(name = "beer_abv")
     private double abv;
+    @AttributeOverride(name = "name", column = @Column(name = "style_name"))
+    @Embedded
     private Style style;
+    @AttributeOverrides({
+            @AttributeOverride(name = "firstName", column = @Column(name = "first_name")),
+            @AttributeOverride(name = "lastName", column = @Column(name = "last_name")),
+            @AttributeOverride(name = "isAdmin", column = @Column(name = "is_admin"))
+    })
+    @Embedded
     private User createdBy;
 
     public Beer() {

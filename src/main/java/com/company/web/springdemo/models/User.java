@@ -1,21 +1,32 @@
 package com.company.web.springdemo.models;
 
-import java.util.Objects;
+import jakarta.persistence.*;
 
+import java.util.Objects;
+@Embeddable
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
     private String userName;
-    private String password;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    private String password;
     private String email;
+    @Column(name = "is_admin")
     private boolean isAdmin;
 
     public User() {
     }
 
-    public User(String userName, String password, String firstName, String lastName, String email) {
+    public User(int id, String userName, String password, String firstName, String lastName, String email) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
         this.firstName = firstName;
@@ -101,4 +112,7 @@ public class User {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
 }

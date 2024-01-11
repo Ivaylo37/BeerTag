@@ -1,11 +1,19 @@
 package com.company.web.springdemo.models;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Embeddable
+@Entity
+@Table(name = "styles")
 public class Style {
 
+    @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-
+    @Column(name = "style_name")
     private String name;
 
     public Style() {
