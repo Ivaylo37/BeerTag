@@ -27,8 +27,8 @@ public class BeerRepositoryImpl implements BeerRepository {
                 Session session = sessionFactory.openSession();
         ) {
             String query = "SELECT * FROM beers " +
-                    "join styles on styles.id = beers.beer_style " +
-                    "join users on beers.beer_creator = users.id " +
+                    "join styles on styles.style_id = beers.beer_style " +
+                    "join users on users.user_id = beers.beer_creator  " +
                     "WHERE 1 + 1";
             if (name != null) {
                 query += " AND beers.name = :name";
@@ -45,8 +45,7 @@ public class BeerRepositoryImpl implements BeerRepository {
             if (sortBy != null && sortOrder != null) {
                 query += " ORDER BY " + sortBy + " " + sortOrder;
             }
-
-            Query<Beer> query1 = session.createQuery(query, Beer.class);
+            Query<Beer> query1 = session.createNativeQuery(query, Beer.class);
 
 
             if (name != null) {

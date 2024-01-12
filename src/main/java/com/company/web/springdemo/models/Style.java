@@ -11,7 +11,7 @@ public class Style {
 
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "style_id")
     private int id;
     @Column(name = "style_name")
     private String name;

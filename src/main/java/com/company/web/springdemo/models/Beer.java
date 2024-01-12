@@ -10,21 +10,20 @@ public class Beer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "beer_id")
     private int id;
     @Column(name = "beer_name")
     private String name;
     @Column(name = "beer_abv")
     private double abv;
-    @AttributeOverride(name = "name", column = @Column(name = "style_name"))
-    @Embedded
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "beer_style")
     private Style style;
-    @AttributeOverrides({
-            @AttributeOverride(name = "firstName", column = @Column(name = "first_name")),
-            @AttributeOverride(name = "lastName", column = @Column(name = "last_name")),
-            @AttributeOverride(name = "isAdmin", column = @Column(name = "is_admin"))
-    })
-    @Embedded
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "beer_creator")
     private User createdBy;
 
     public Beer() {
