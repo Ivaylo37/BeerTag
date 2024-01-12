@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class StyleRepositorySqlImpl implements StyleRepository {
+public class StyleRepositoryImpl implements StyleRepository {
 
 
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public StyleRepositorySqlImpl(SessionFactory sessionFactory) {
+    public StyleRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
