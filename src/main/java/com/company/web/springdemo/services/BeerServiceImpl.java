@@ -52,18 +52,10 @@ public class BeerServiceImpl implements BeerService {
         if (!user.isAdmin() && !beer.getCreatedBy().equals(user)) {
             throw new UnauthorizedOperationException("Only admins or owners can modify the beer.");
         }
-        boolean duplicateExists = true;
-        try {
-            Beer existingBeer = repository.get(beer.getName());
-            if (existingBeer.getId() == beer.getId()) {
-                duplicateExists = false;
-            }
-        } catch (EntityNotFoundException e) {
-            duplicateExists = false;
-        }
-
-        if (duplicateExists) {
-            throw new EntityDuplicateException("Beer", "name", beer.getName());
+        boolean exists = false;
+        Beer toUpdate = get(beer.getId());
+        if (toUpdate.equals(null)) {
+            throw new EntityNotFoundException("id", beer.getId());
         }
 
         repository.update(beer);

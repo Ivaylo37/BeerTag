@@ -106,8 +106,10 @@ public class BeerRepositoryImpl implements BeerRepository {
     @Override
     public void update(Beer beer) {
         try (Session session = sessionFactory.openSession()) {
+            Beer toUpdate = get(beer.getId());
+            toUpdate = beer;
             session.beginTransaction();
-            session.save(beer);
+            session.update(toUpdate);
             session.getTransaction().commit();
         }
     }
@@ -115,8 +117,9 @@ public class BeerRepositoryImpl implements BeerRepository {
     @Override
     public void delete(int id) {
         try (Session session = sessionFactory.openSession()) {
+            Beer beerToDelete = get(id);
             session.beginTransaction();
-            session.delete(id);
+            session.delete(beerToDelete);
             session.getTransaction().commit();
         }
     }

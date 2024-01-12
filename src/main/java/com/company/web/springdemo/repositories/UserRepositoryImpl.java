@@ -12,12 +12,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class UserRepositorySqlImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository{
 
 
     private final SessionFactory sessionFactory;
     @Autowired
-    public UserRepositorySqlImpl(SessionFactory sessionFactory) {
+    public UserRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -64,8 +64,9 @@ public class UserRepositorySqlImpl implements UserRepository{
     @Override
     public void delete(int id) {
         try (Session session = sessionFactory.openSession()) {
+            User userToDelete = getById(id);
             session.beginTransaction();
-            session.delete(id);
+            session.delete(userToDelete);
             session.getTransaction().commit();
         }
     }
