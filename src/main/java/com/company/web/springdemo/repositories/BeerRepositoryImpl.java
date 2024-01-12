@@ -121,5 +121,4 @@ public class BeerRepositoryImpl implements BeerRepository {
             session.getTransaction().commit();
         }
     }
-
 }
