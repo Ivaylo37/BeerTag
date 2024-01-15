@@ -4,6 +4,8 @@ import com.company.web.springdemo.exceptions.EntityDuplicateException;
 import com.company.web.springdemo.exceptions.EntityNotFoundException;
 import com.company.web.springdemo.exceptions.UnauthorizedOperationException;
 import com.company.web.springdemo.helpers.UserMapper;
+import com.company.web.springdemo.models.Beer;
+import com.company.web.springdemo.models.BeerDto;
 import com.company.web.springdemo.models.User;
 import com.company.web.springdemo.models.UserDto;
 import com.company.web.springdemo.services.UserService;
@@ -31,6 +33,53 @@ public class UserRestController {
         this.service = service;
         this.userMapper = userMapper;
         this.authenticationHelper = authenticationHelper;
+    }
+
+    @GetMapping
+    public List<User> getAll() {
+        return service.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getById(@PathVariable int id) {
+        try {
+            return service.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+    @GetMapping("/id/wish-list")
+    public List<Beer> getWishList(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            return new ArrayList<>(user.getWishList());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @PutMapping("/id/wish-list/{beerId}")
+    public List<Beer> addToWishList(@PathVariable int userId, @PathVariable int beerId, @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            return service.addBeerToWishList(userId, beerId);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/id/wish-list/{beerId}")
+    public List<Beer> removeBeerFromWishlist(@PathVariable int userId, @PathVariable int beerId, @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            return service.removeBeerFromWishList(userId, beerId);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @PostMapping

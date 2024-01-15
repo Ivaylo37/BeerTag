@@ -1,5 +1,6 @@
 package com.company.web.springdemo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -17,10 +18,10 @@ public class Beer {
     @Column(name = "beer_abv")
     private double abv;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "beer_style")
     private Style style;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "beer_creator")

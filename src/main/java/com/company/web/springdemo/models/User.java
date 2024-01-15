@@ -1,15 +1,18 @@
 package com.company.web.springdemo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
+
 @Embeddable
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int id;
     private String userName;
@@ -19,6 +22,16 @@ public class User {
     private String lastName;
     private String password;
     private String email;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "beer_id")
+    )
+    private Set<Beer> wishList;
+
     @Column(name = "is_admin")
     private boolean isAdmin;
 
@@ -42,6 +55,14 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.isAdmin = isAdmin;
+    }
+
+    public Set<Beer> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(Set<Beer> wishList) {
+        this.wishList = wishList;
     }
 
     public int getId() {

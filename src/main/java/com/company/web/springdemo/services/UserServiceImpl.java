@@ -3,34 +3,39 @@ package com.company.web.springdemo.services;
 import com.company.web.springdemo.exceptions.EntityDuplicateException;
 import com.company.web.springdemo.exceptions.EntityNotFoundException;
 import com.company.web.springdemo.exceptions.UnauthorizedOperationException;
+import com.company.web.springdemo.models.Beer;
 import com.company.web.springdemo.models.User;
+import com.company.web.springdemo.repositories.BeerRepository;
 import com.company.web.springdemo.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final BeerRepository beerRepository;
 
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
+    public UserServiceImpl(UserRepository repository, BeerRepository beerRepository) {
+        this.userRepository = repository;
+        this.beerRepository = beerRepository;
     }
 
     @Override
     public List<User> getAll() {
-        return repository.getAll();
+        return userRepository.getAll();
     }
 
     @Override
     public User getById(int id) {
-        return repository.getById(id);
+        return userRepository.getById(id);
     }
 
     @Override
     public User getByUsername(String username) {
-        return repository.getByUsername(username);
+        return userRepository.getByUsername(username);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService{
         boolean duplicateUserNameExists = true;
         boolean duplicatePasswordExists = false;
         try {
-            repository.getByUsername(user.getUserName());
+            userRepository.getByUsername(user.getUserName());
         } catch (EntityNotFoundException e) {
             duplicateUserNameExists = false;
             if (getAll().stream().anyMatch(user1 -> user1.getPassword().equals(user.getPassword()))) {
@@ -53,7 +58,7 @@ public class UserServiceImpl implements UserService{
             throw new EntityDuplicateException("User", "password", user.getPassword());
         }
 
-        repository.create(user);
+        userRepository.create(user);
     }
 
     @Override
@@ -61,6 +66,26 @@ public class UserServiceImpl implements UserService{
         if(!user.isAdmin()) {
             throw new UnauthorizedOperationException("Only admins can delete the user.");
         }
-        repository.delete(id);
+        userRepository.delete(id);
+    }
+
+    @Override
+    public List<Beer> addBeerToWishList(int userId, int beerId) {
+        User user = userRepository.getById(userId);
+        Beer beer = beerRepository.get(beerId);
+        if (user.getWishList().add(beer)) {
+            userRepository.update(user);
+        }
+        return new ArrayList<>(user.getWishList());
+    }
+
+    @Override
+    public List<Beer> removeBeerFromWishList(int userId, int beerId) {
+        User user = userRepository.getById(userId);
+        Beer beer = beerRepository.get(beerId);
+        if (user.getWishList().remove(beer)) {
+            userRepository.update(user);
+        }
+        return new ArrayList<>(user.getWishList());
     }
 }
