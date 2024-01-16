@@ -16,6 +16,6 @@ public interface BeerService {
 
     void update(Beer beer, User user);
 
-    void delete(int id, User user);
+    int delete(int id, User user);
 
 }

@@ -64,11 +64,13 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public void delete(int id, User user) {
+    public int delete(int id, User user) {
         if (!user.isAdmin() && !user.equals(get(id).getCreatedBy())) {
             throw new UnauthorizedOperationException("Only admins or owners can delete the beer.");
         }
+
         repository.delete(id);
+        return id;
     }
 
 }

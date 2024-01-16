@@ -19,6 +19,7 @@ public class Helpers {
         mockUser.setLastName("MockLastName");
         mockUser.setFirstName("MockFirstName");
         mockUser.setEmail("mock@user.com");
+        mockUser.setAdmin(false);
         return mockUser;
     }
 
