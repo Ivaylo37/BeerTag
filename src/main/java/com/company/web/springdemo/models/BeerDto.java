@@ -16,6 +16,9 @@ public class BeerDto {
     @Positive(message = "StyleId should be positive")
     private int styleId;
 
+    public BeerDto() {
+    }
+
     public BeerDto(String name, double abv, int styleId) {
         setName(name);
         setAbv(abv);

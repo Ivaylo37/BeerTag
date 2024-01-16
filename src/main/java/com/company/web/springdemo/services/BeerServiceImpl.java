@@ -34,7 +34,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public void create(Beer beer) {
+    public void create(Beer beer, User user) {
         boolean duplicateExists = true;
         try {
             repository.get(beer.getName());
@@ -45,7 +45,7 @@ public class BeerServiceImpl implements BeerService {
         if (duplicateExists) {
             throw new EntityDuplicateException("Beer", "name", beer.getName());
         }
-
+        beer.setCreatedBy(user);
         repository.create(beer);
     }
 

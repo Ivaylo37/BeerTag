@@ -12,7 +12,7 @@ public interface BeerService {
 
     Beer get(int id);
 
-    void create(Beer beer);
+    void create(Beer beer, User user);
 
     void update(Beer beer, User user);
 
