@@ -4,11 +4,13 @@ import com.company.web.springdemo.exceptions.EntityDuplicateException;
 import com.company.web.springdemo.exceptions.EntityNotFoundException;
 import com.company.web.springdemo.exceptions.UnauthorizedOperationException;
 import com.company.web.springdemo.models.Beer;
+import com.company.web.springdemo.models.FilterOptions;
 import com.company.web.springdemo.models.User;
 import com.company.web.springdemo.repositories.BeerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -22,8 +24,8 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<Beer> get(String name, Double minAbv, Double maxAbv, Integer styleId, String sortBy, String sortOrder) {
-        return repository.get(name, minAbv, maxAbv, styleId, sortBy, sortOrder);
+    public List<Beer> get(FilterOptions filterOptions) {
+        return repository.get(filterOptions);
     }
 
     @Override

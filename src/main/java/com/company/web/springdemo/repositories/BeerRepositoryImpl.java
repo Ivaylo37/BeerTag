@@ -2,13 +2,17 @@ package com.company.web.springdemo.repositories;
 
 import com.company.web.springdemo.exceptions.EntityNotFoundException;
 import com.company.web.springdemo.models.Beer;
+import com.company.web.springdemo.models.FilterOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class BeerRepositoryImpl implements BeerRepository {
@@ -22,53 +26,41 @@ public class BeerRepositoryImpl implements BeerRepository {
 
 
     @Override
-    public List<Beer> get(String name, Double minAbv, Double maxAbv, Integer styleId, String sortBy, String sortOrder) {
-        try (
-                Session session = sessionFactory.openSession();
-        ) {
-            String query = "SELECT * FROM beers " +
-                    "join styles on styles.style_id = beers.beer_style " +
-                    "join users on users.user_id = beers.beer_creator  " +
-                    "WHERE 1 + 1";
-            if (name != null) {
-                query += " AND beers.name = :name";
-            }
-            if (minAbv != null) {
-                query += " AND beers.abv >= :abvMin";
-            }
-            if (maxAbv != null) {
-                query += " AND beers.abv <= :abvMax";
-            }
-            if (styleId != null) {
-                query += " AND beers.style_id = styleId";
-            }
-            if (sortBy != null && sortOrder != null) {
-                query += " ORDER BY " + sortBy + " " + sortOrder;
-            }
-            Query<Beer> query1 = session.createNativeQuery(query, Beer.class);
-
-
-            if (name != null) {
-                query1.setParameter("name", name);
-            }
-            if (minAbv != null) {
-                query1.setParameter("abvMin", minAbv);
-            }
-            if (maxAbv != null) {
-                query1.setParameter("abvMax", maxAbv);
-            }
-            if (styleId != null) {
-                query1.setParameter("styleId", styleId);
-            }
-            return query1.getResultList();
-
-        }
-    }
-
-    @Override
-    public List<Beer> getAll() {
+    public List<Beer> get(FilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Beer> query = session.createQuery("from Beer", Beer.class);
+            List<String> filters = new ArrayList<>();
+            Map<String, Object> params = new HashMap<>();
+
+            filterOptions.getName().ifPresent(value -> {
+                filters.add("name like :name");
+                params.put("name", String.format("%%%s%%", value));
+            });
+
+            filterOptions.getMinAbv().ifPresent(value -> {
+                filters.add("abv >= :minAbv");
+                params.put("minAbv", value);
+            });
+
+            filterOptions.getMaxAbv().ifPresent(value -> {
+                filters.add("abv <= :maxAbv");
+                params.put("maxAbv", value);
+            });
+
+            filterOptions.getStyleId().ifPresent(value -> {
+                filters.add("style.id = :styleId");
+                params.put("styleId", value);
+            });
+
+            StringBuilder queryString = new StringBuilder("from Beer");
+            if (!filters.isEmpty()) {
+                queryString
+                        .append(" where ")
+                        .append(String.join(" and ", filters));
+            }
+            queryString.append(generateOrderBy(filterOptions));
+
+            Query<Beer> query = session.createQuery(queryString.toString(), Beer.class);
+            query.setProperties(params);
             return query.list();
         }
     }
@@ -122,5 +114,32 @@ public class BeerRepositoryImpl implements BeerRepository {
             session.delete(beerToDelete);
             session.getTransaction().commit();
         }
+    }
+
+    private String generateOrderBy(FilterOptions filterOptions) {
+        if (filterOptions.getSortBy().isEmpty()) {
+            return "";
+        }
+
+        String orderBy = "";
+        switch (filterOptions.getSortBy().get()) {
+            case "name":
+                orderBy = "name";
+                break;
+            case "abv":
+                orderBy = "abv";
+                break;
+            case "style":
+                orderBy = "style.name";
+                break;
+        }
+
+        orderBy = String.format(" order by %s", orderBy);
+
+        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+            orderBy = String.format("%s desc", orderBy);
+        }
+
+        return orderBy;
     }
 }

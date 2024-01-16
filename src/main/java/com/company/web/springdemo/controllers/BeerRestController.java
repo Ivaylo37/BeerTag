@@ -6,6 +6,7 @@ import com.company.web.springdemo.exceptions.UnauthorizedOperationException;
 import com.company.web.springdemo.helpers.BeerMapper;
 import com.company.web.springdemo.models.Beer;
 import com.company.web.springdemo.models.BeerDto;
+import com.company.web.springdemo.models.FilterOptions;
 import com.company.web.springdemo.models.User;
 import com.company.web.springdemo.services.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,8 @@ public class BeerRestController {
             @RequestParam(required = false) Integer styleId,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder) {
-        return service.get(name, minAbv, maxAbv, styleId, sortBy, sortOrder);
+        FilterOptions filterOptions = new FilterOptions(name, minAbv, maxAbv, styleId, sortBy, sortOrder);
+        return service.get(filterOptions);
     }
 
     @GetMapping("/{id}")
