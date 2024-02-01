@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Beers</title>
+    <link href="../static/styles.css" th:href="@{styles.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="table"
+<div class="header">
+    <div class="cell" th:text="#{beer.label.name}">Name</div>
+    <div class="cell" th:text="#{beer.label.abv}">ABV</div>
+    <div class="cell" th:text="#{beer.label.style}">Style</div>
+</div>
+<div class="row" th:each="beer : ${beers}">
+    <div class="cell">
+        <a href="#" th:href="@{/beers/{id}(id=${beer.get()})}" th:text="${beer.name}">Beer</a>
+    </div>
+    <div class="cell" th:text="${beer.abv}">4.5</div>
+    <div class="cell" th:text="${beer.style.name}">Style</div>
+</div>
+</div>
+</body>
+</html>
